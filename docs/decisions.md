@@ -9,11 +9,16 @@
 | 5 | 2026-11-23 | Add modelling packages only in Phase 4 | Not needed yet | Proposed |
 | 6 | 2026-11-23 | Keep the original CHIM archive locally | Published link is dead; the Box copy could disappear | Agreed |
 | 7 | 2026-11-23 | Do not publish or redistribute CHIM data or derived flow tables | No data licence found | Agreed, until resolved |
+| 8 | 2026-11-23 | Assign municipality codes by matrix position (metadata order), never by label | Some 1992 labels are attached to the wrong municipality | Agreed |
+| 9 | 2026-11-23 | Metadata codes for all joins; metadata names for display only | Flow and boundary names are damaged | Agreed |
+| 10 | 2026-11-23 | Origin = `tm5ymun`, destination = `tmhabmun` | docs/chim_interpretation.md | Agreed |
+| 11 | 2026-11-23 | Keep CHIM-derived numerical reports in `reports/local/` (not committed) | Licence unresolved | Agreed |
+| 12 | 2026-11-23 | Treat boundary coordinates as EPSG:32719 | docs/boundaries.md | Proposed |
 
 ## Open questions
 
-- CHIM boundary file declares a Swiss CRS (CH1903). Not yet verified (Step 4).
-- CHIM place names have inconsistent accents, so names may not be safe join keys (Step 5).
-- CHIM totals are below the census population. They cover ages 5+, living in Chile at
-  both dates. How many people were dropped for unknown previous residence is not stated.
+- Denominators for in- and out-rates (docs/chim_interpretation.md).
+- FUA conglomerates, small cities, displaced units (docs/boundaries.md).
+- Step 3 findings and open questions are in docs/chim_interpretation.md.
+- CHIM covers ages 5+ resident in Chile at both dates; its exclusions are not documented.
 - No explicit licence found for the CHIM data.

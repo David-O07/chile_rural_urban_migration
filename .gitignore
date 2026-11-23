@@ -8,6 +8,10 @@ data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 
+# CHIM-derived numerical reports: local until the licence is settled
+reports/local/
+reports/figures/
+
 # Archives and partial downloads
 *.zip
 *.7z
