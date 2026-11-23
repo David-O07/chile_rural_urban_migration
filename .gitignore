@@ -1,0 +1,68 @@
+# --- Data -------------------------------------------------------------------
+# CHIM data AND tables derived from it must not be published until its licence
+# is clarified (docs/decisions.md). Data formats are therefore ignored everywhere,
+# not only in data/. To commit a safe file (e.g. a synthetic test fixture), add an
+# explicit exception such as  !tests/fixtures/toy_flows.csv
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Archives and partial downloads
+*.zip
+*.7z
+*.gz
+*.tar
+*.rar
+*.part
+
+# Tables
+*.csv
+*.tsv
+*.xls
+*.xlsx
+*.parquet
+*.feather
+*.pkl
+*.pickle
+*.npy
+*.npz
+*.db
+*.sqlite*
+
+# Vector and raster geodata, including sidecar files
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.sbn
+*.sbx
+*.shp.xml
+*.gpkg
+*.gpkg-*
+*.geojson
+*.tif
+*.tiff
+*.aux.xml
+*.ovr
+
+# --- Environments and secrets -------------------------------------------------
+.venv/
+venv/
+.env
+.env.*
+
+# --- Caches, editors, temporary files -----------------------------------------
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+*.ipynb
+.vscode/
+.idea/
+.claude/
+*.tmp
+*.log
+*.lock
+.DS_Store

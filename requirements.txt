@@ -1,0 +1,12 @@
+# Python 3.11. Direct dependencies only, pinned to the versions installed and tested.
+# Modelling packages (statsmodels, libpysal, esda, spreg) are added in Phase 4.
+pandas==3.1.1
+numpy==2.4.6
+geopandas==1.1.4
+shapely==2.2.0
+pyproj==3.6.1
+pyogrio==0.13.0      # reads shapefiles and GeoPackages
+rasterio==1.4.1      # reads the GHSL population grid
+openpyxl==3.1.5      # reads CHIM's metadata workbook
+matplotlib==3.11.2
+pytest==9.2.0
