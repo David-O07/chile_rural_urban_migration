@@ -1,21 +1,21 @@
 # Data sources
 
-Status: **planned**. Nothing is in `data/raw/` yet. "Inspected" means a Phase 1 copy in
-temporary storage was opened; "header only" means only the URL and size were checked.
+Status: **acquired and verified 2026-11-23** by `src/acquire.py`. "Verified" means exact
+size, SHA-256, zip integrity and expected contents. It does not mean the data are correct.
 
 | | CHIM | GHS-FUA | GHS-POP |
 |---|---|---|---|
 | Contents | Flow matrices, populations at risk, boundaries, metadata | Functional Urban Area polygons | Estimated residents per grid cell |
 | Version | Box copy, files dated 2017 | R2019A V1.0 | R2019A V1.0, epoch 2015 |
 | Provider | GeoDa Center / F. Rowe | European Commission JRC | European Commission JRC |
-| Format | Zip of zips: CSV-named text, shapefile, xlsx, rtf | Zip: GeoPackage, PDF | Zip: expected GeoTIFF |
+| Format | Zip of zips: CSV-named text, shapefile, xlsx, rtf | Zip: GeoPackage, PDF | Zip: GeoTIFF (36,082 x 18,000), PDF |
 | Download size (bytes) | 731,174,792 | 3,059,037 | 137,934,966 |
 | Coverage | Chile, 304 harmonized municipalities | World; 31 FUAs coded Chile | World, 1 km cells |
 | Period | 1977-82, 1987-92, 1997-2002 | 2015 | 2015 |
-| Coordinate system | Declared CH1903, **suspect** | World Mollweide per file name (54009) | World Mollweide per file name (54009) |
+| Coordinate system | Declared CH1903, **suspect** | World Mollweide (ESRI:54009) | World Mollweide (ESRI:54009) |
 | Licence | No data licence found; GeoDa says "as is". The describing article is CC BY | CC BY 4.0 | CC BY 4.0 |
 | Redistribute? | No, until clarified | Allowed with credit; not committed | Allowed with credit; not committed |
-| Checked | Inspected | Inspected | Header only |
+| Checked | Verified; matches Phase 1 copy | Verified; matches Phase 1 copy | Verified; first copy |
 
 ## Download locations
 
@@ -27,14 +27,14 @@ temporary storage was opened; "header only" means only the URL and size were che
 - GHS-POP: https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/GHSL/GHS_POP_MT_GLOBE_R2019A/GHS_POP_E2015_GLOBE_R2019A_54009_1K/V1-0/GHS_POP_E2015_GLOBE_R2019A_54009_1K_V1_0.zip
 - GHSL licence: https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/GHSL/copyright.txt
 
-## SHA-256 checksums (Phase 1 copies)
+## SHA-256 checksums
 
 These record what we downloaded. The providers publish no checksum that we found, so
 they detect later changes but do not prove authenticity.
 
 - CHIM zip: `cf315e541993aef04b56dd77e5da470f0363ea3cbd543403cec277c8f01eeb8b`
 - GHS-FUA zip: `d54de59b82b8c4d64a710f90ccd554975a3be92233f14115ac154094c3549979`
-- GHS-POP zip: to be recorded at download
+- GHS-POP zip: `8cda2bfd1dbdc7b2bc0fd9a08afa92efc202d37092d09e7bf1779c42fbe29559`
 
 ## Files we need from CHIM
 
@@ -44,6 +44,25 @@ they detect later changes but do not prove authenticity.
 - `Documentation/`
 
 `Matrices.zip` expands to about 8.4 GB, so it must not be extracted in full.
+
+## What the `overall` matrices contain
+
+- Counts of people by municipality now (`tmhabmun`) and five years before (`tm5ymun`),
+  one row per pair, 304 x 304 = 92,416 rows per census, including same-municipality pairs.
+- Verified: summing all 34 sex-by-age files reproduces `overall` in every cell, in all
+  three years. So do the education files (170, 164 and 164).
+- Universe: ages 5+ (age groups 2-18). No abroad or unknown category, so international
+  arrivals are excluded. CHIM does not say how many unknown origins were dropped.
+- One date comparison per person: intermediate moves, returns within the interval,
+  deaths and emigrants are not observed.
+
+## Licensing and redistribution (CHIM)
+
+We found no licence covering the data. The readme has none and GeoDa offers it "as is";
+the CC BY licence of the REGION article covers the article. Until this is resolved:
+
+- The original archive is kept only in `data/raw/chim/CHIM.zip` (local, read-only).
+- Neither CHIM files nor tables derived from its flows are published or redistributed.
 
 ## Citations
 
