@@ -27,7 +27,7 @@ CC BY 3.0 IGO, https://www.geoboundaries.org. Validation only. It probably share
 ancestry with CHIM's boundaries, so agreement establishes the CRS, not their accuracy.
 SHA-256 `f3833ce1965394ae705e3793b50bdd007775b43da604251871deffed04f3bffd`.
 
-## Matching municipalities to FUAs (proposed, not applied)
+## Matching municipalities to FUAs
 
 1. Cut each 1 km GHS-POP cell into 10 x 10 pieces and give its people to units by land share.
    Cells partly at sea keep all their people on land.
@@ -41,13 +41,9 @@ in the city, and no unit can qualify for two FUAs (an exact 50/50 split aside).
 Population rather than area, because a large unit may be mostly empty with its people in a city.
 Toy: land 25% inside, people 67% inside: assigned (`tests/test_boundaries.py`).
 
-Later, if approved: flows between units of one settlement become non-migration. Merge by adding
+Once merged, flows between units of one settlement become non-migration. Merge by adding
 rows and columns; the diagonal then includes moves between merged members.
 
-Cases needing a decision:
+Merged FUAs, small cities and displaced units: docs/geography.md.
 
-- One unit can span two FUAs, leaving one FUA with few of its own people. The paper's appendix
-  allows "a local conglomerate of FUAs".
-- The paper adds "small cities": unmatched units with at least half their people in dense urban
-  areas of the GHSL Degree of Urbanization. That needs the GHS-SMOD grid, not yet acquired.
-- 2015 city limits and 2015 population are applied to earlier censuses, as in the paper.
+2015 city limits and 2015 population are applied to earlier censuses, as in the paper.

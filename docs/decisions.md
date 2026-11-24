@@ -13,12 +13,25 @@
 | 9 | 2026-11-23 | Metadata codes for all joins; metadata names for display only | Flow and boundary names are damaged | Agreed |
 | 10 | 2026-11-23 | Origin = `tm5ymun`, destination = `tmhabmun` | docs/chim_interpretation.md | Agreed |
 | 11 | 2026-11-23 | Keep CHIM-derived numerical reports in `reports/local/` (not committed) | Licence unresolved | Agreed |
-| 12 | 2026-11-23 | Treat boundary coordinates as EPSG:32719 | docs/boundaries.md | Proposed |
+| 12 | 2026-11-23 | Assign EPSG:32719 and repair invalid geometries, in memory only | docs/boundaries.md | Agreed |
+| 13 | 2026-11-23 | Exclude Antártica from the main analysis | Tiny, displaced, no usable geometry | Agreed |
+| 14 | 2026-11-23 | Never use inset geometries for area, density or neighbours; keep Isla de Pascua and Juan Fernández out of neighbour models unless restored | False positions | Agreed |
+| 15 | 2026-11-23 | FUA rule: at least 50% of population; 40% and 60% as sensitivity checks | Paper's rule | Agreed |
+| 16 | 2026-11-23 | La Cruz to Quillota; Quillota + La Calera merged as a sensitivity check | 50% rule | Agreed |
+| 17 | 2026-11-23 | Our classification is not equivalent to the paper's: units come from CHIM, not IPUMS | Different geography | Agreed |
+| 18 | 2026-11-23 | Acquire GHS-SMOD R2019A V2.0, epoch 2015 | Small-city definition | Agreed |
+| 19 | 2026-11-23 | Merge the Concepción and Chiguayante FUAs; sensitivity: separate, and Hualqui unmatched | Keeps a centre and its commuter belt together; a departure from the published algorithm | Agreed |
+| 20 | 2026-11-23 | Small cities: GHS-SMOD class 30 only (replaces 30 + 23). Main sensitivity: 30 + 23. Broad: 30 + 23 + 22 | 30 + 23 gave far more small cities than the paper reports | Agreed |
+| 21 | 2026-11-23 | Keep Isla de Pascua and Juan Fernández in the migration data; unclassified, unranked, not in neighbour models, no area or density assigned; sensitivity: without them | Flows complete, geometry not usable | Agreed |
+| 22 | 2026-11-23 | Primary neighbour models use queen contiguity between settlements; units with no neighbour (Puqueldón, Guaitecas) leave them but stay in non-spatial analysis | A unit without neighbours has no spatial lag | Agreed |
+| 23 | 2026-11-23 | Rank by period-specific average population; normalize within period; origin- and destination-population ranks as sensitivity (docs/measures.md) | One consistent base for the interval | Agreed |
+| 24 | 2026-11-23 | Out-migration denominator: origin population. In-migration: average population. Sensitivity: average for out, destination population for in | docs/measures.md | Agreed |
+| 25 | 2026-11-23 | Five-year rates; not annualized | Match the question asked in the census | Agreed |
 
 ## Open questions
 
-- Denominators for in- and out-rates (docs/chim_interpretation.md).
-- FUA conglomerates, small cities, displaced units (docs/boundaries.md).
+- Area and classification of the two displaced islands.
+- Nearest-neighbour sensitivity for Phase 4 (docs/geography.md).
 - Step 3 findings and open questions are in docs/chim_interpretation.md.
 - CHIM covers ages 5+ resident in Chile at both dates; its exclusions are not documented.
 - No explicit licence found for the CHIM data.

@@ -58,15 +58,13 @@ def read_population(bounds):
         return np.where(pop == src.nodata, 0, pop), window_transform(window, src.transform)
 
 
-def population_by_fua(units, fuas, pop, transform, k: int = 10) -> np.ndarray:
-    """People in each unit (rows) outside any FUA (column 0) and in each FUA (columns 1..).
+def population_by_zone(units, zone_id, n_zones, pop, transform, k: int = 10) -> np.ndarray:
+    """People in each unit (rows) in each zone (columns 0..n_zones-1) of a cell-level raster.
 
-    FUAs follow whole grid cells. Units do not, so each cell is cut into k x k sub-cells
+    Zones follow whole grid cells. Units do not, so each cell is cut into k x k sub-cells
     and its people are divided among units by land share, counting only land that belongs
     to some unit (nobody is placed in the sea).
     """
-    fua_id = rasterize([(g, i + 1) for i, g in enumerate(fuas.geometry)],
-                       out_shape=pop.shape, transform=transform, fill=0, dtype="int32")
     size = transform.a
     coverage = np.zeros(pop.shape)
     pieces = []
@@ -84,11 +82,37 @@ def population_by_fua(units, fuas, pop, transform, k: int = 10) -> np.ndarray:
         coverage[window] += share
         pieces.append((window, share))
     coverage[coverage == 0] = 1
-    table = np.zeros((len(units), len(fuas) + 1))
+    table = np.zeros((len(units), n_zones))
     for i, (window, share) in enumerate(pieces):
         people = pop[window] * share / coverage[window]
-        table[i] = np.bincount(fua_id[window].ravel(), people.ravel(), len(fuas) + 1)
+        table[i] = np.bincount(zone_id[window].ravel(), people.ravel(), n_zones)
     return table
+
+
+def fua_raster(fuas, shape, transform) -> np.ndarray:
+    """0 outside any FUA; position in the table + 1 inside one."""
+    return rasterize([(g, i + 1) for i, g in enumerate(fuas.geometry)],
+                     out_shape=shape, transform=transform, fill=0, dtype="int32")
+
+
+def population_by_fua(units, fuas, pop, transform, k: int = 10) -> np.ndarray:
+    """People in each unit outside any FUA (column 0) and in each FUA (columns 1..)."""
+    zones = fua_raster(fuas, pop.shape, transform)
+    return population_by_zone(units, zones, len(fuas) + 1, pop, transform, k)
+
+
+def read_smod(shape, transform) -> np.ndarray:
+    """GHS-SMOD settlement class of each cell in the population window."""
+    path, = (RAW / "ghs_smod").glob("*.tif")
+    height, width = shape
+    with rasterio.open(path) as src:
+        window = from_bounds(transform.c, transform.f - height * CELL,
+                             transform.c + width * CELL, transform.f,
+                             src.transform).round_offsets().round_lengths()
+        smod = src.read(1, window=window)
+    if smod.shape != tuple(shape):
+        raise ChimError("settlement grid does not cover the population window")
+    return smod
 
 
 def best_fua(table: np.ndarray):

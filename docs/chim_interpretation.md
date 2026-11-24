@@ -45,7 +45,7 @@ row order; pinned SHA-256 of the code sequence and of each year's label sequence
 files equal origin totals; resident/census ratios within bounds (tests). The original labels
 are written beside the assigned codes to `reports/local/label_audit_{year}.csv`.
 
-## Denominators (open)
+## Denominators: the candidates
 
 | Candidate | What it counts | Out-migration | In-migration |
 |---|---|---|---|
@@ -57,4 +57,4 @@ are written beside the assigned codes to `reports/local/label_audit_{year}.csv`.
 Lerch, Du and Beckendorff (2026) divide departures "by the sending population" and arrivals
 "by the destination population" without stating a date. Their appendix describes a "population
 at risk (average, over 5 years before last census)", which suggests a period average, but the
-exact construction is not given. No choice has been made.
+exact construction is not given. The choice made is in docs/measures.md.

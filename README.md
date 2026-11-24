@@ -20,6 +20,7 @@ on a scale from sparse countryside to the largest city.
 |---|---|---|
 | CHIM (Rowe 2017) | Migration flows, populations, municipal boundaries | [GeoDa page](https://geodacenter.github.io/data-and-lab/CHIM/), [paper](https://doi.org/10.18335/region.v4i3.198) |
 | GHS-FUA R2019A | Functional Urban Area boundaries | [GHSL](https://human-settlement.emergency.copernicus.eu/ghs_fua.php) |
+| GHS-SMOD R2019A, 2015, 1 km | Which cells are dense urban | [GHSL](https://human-settlement.emergency.copernicus.eu/) |
 | GHS-POP R2019A, 2015, 1 km | Population overlap between municipalities and FUAs | [GHSL](https://human-settlement.emergency.copernicus.eu/) |
 
 Raw data is not in this repository. See [docs/data_sources.md](docs/data_sources.md)
@@ -31,7 +32,9 @@ for locations, sizes, checksums and licences.
   paper's: CHIM replaces the IPUMS samples.
 - Three periods in one country can describe change but cannot identify its causes.
 
-Methodological choices are recorded in [docs/decisions.md](docs/decisions.md).
+Methodological choices are recorded in [docs/decisions.md](docs/decisions.md);
+the geography in [docs/geography.md](docs/geography.md) and planned measures in
+[docs/measures.md](docs/measures.md).
 
 ## Setup
 
