@@ -29,10 +29,13 @@
 | 25 | 2026-11-23 | Five-year rates; not annualized | Match the question asked in the census | Agreed |
 | 26 | 2026-11-23 | Remove Antártica from all matrices before populations and rates | Populations and flows must come from one table | Agreed |
 | 27 | 2026-11-23 | Moves with Isla de Pascua and Juan Fernández count as ordinary mainland departures and arrivals; the islands are unranked | Keeps real moves | Agreed |
+| 28 | 2026-11-24 | Historical-boundary sensitivity with five groups; not a reconstruction of 1977 boundaries; Dalcahue + Quinchao flagged indirect; primary unchanged | docs/historical_boundaries.md | Agreed |
+| 29 | 2026-11-24 | Florida and San Pedro: every-period exclusion is the main sample check, 2002-only additional; flows unchanged; tests influence, not a correction | docs/measures.md | Agreed |
+| 30 | 2026-11-24 | Unweighted primary. Sensitivity: average population at least 500 (per period); without Santiago. Supplementary: population and log-population weights, with effective size and largest weight | docs/measures.md | Agreed |
+| 31 | 2026-11-24 | Report every specification; never select by agreement with the primary result | Avoids selective reporting | Agreed |
 
 ## Open questions
 
-- Treatment of suspected artefacts in 1977-82 and 1997-2002 flows (docs/measures.md).
 - Area and classification of the two displaced islands.
 - Nearest-neighbour sensitivity for Phase 4 (docs/geography.md).
 - Step 3 findings and open questions are in docs/chim_interpretation.md.

@@ -108,6 +108,42 @@ def test_municipality_without_people_is_never_a_city(ev):
     assert ids(ev, RULES)["e"] == "Re"
 
 
+# --- historical groups ---
+
+def test_linked_groups_follow_chains():
+    got = geo.linked_groups([("a", "b"), ("c", "d"), ("b", "e"), ("x", "y"), ("d", "e")])
+    assert set(got) == {frozenset("abcde"), frozenset("xy")}
+
+
+def test_historical_group_is_one_rural_settlement(ev):
+    sc = replace(RULES, historical=(frozenset({"d", "e"}),), dense=(30,))
+    cw = geo.build_crosswalk(ev, sc)
+    geo.validate_crosswalk(cw, CODES, sc)
+    row = cw.set_index("code").loc[["d", "e"]]
+    assert set(row.settlement_id) == {"Hd+e"} and set(row.type) == {geo.RURAL}
+    out, acc = geo.aggregate_flows(FLOWS, cw)
+    assert out.loc["Hd+e", "Hd+e"] == 30 + 1 + 5 + 20
+    assert acc["people_after"] + acc["dropped_excluded_origin_or_destination"] == FLOWS.to_numpy().sum()
+    table = geo.settlements(ev, cw).set_index("settlement_id").loc["Hd+e"]
+    assert table.area_km2 == 9 and table.municipalities == "d;e" and table.census_2002 == 130
+
+
+def test_historical_group_type_uses_combined_people(ev):
+    sc = replace(RULES, historical=(frozenset({"d", "e"}),))   # 60 dense people of 200
+    assert set(geo.build_crosswalk(ev, sc).set_index("code").type[["d", "e"]]) == {geo.RURAL}
+
+
+@pytest.mark.parametrize("groups, message", [
+    ((frozenset({"a", "d"}),), "cannot be grouped"),         # a is in a city
+    ((frozenset({"e", "f"}),), "cannot be grouped"),         # f is excluded
+    ((frozenset({"d", "z"}),), "unknown"),
+    ((frozenset({"d", "e"}), frozenset({"e"})), "two historical"),
+])
+def test_bad_historical_groups_stop(ev, groups, message):
+    with pytest.raises(geo.GeographyError, match=message):
+        geo.build_crosswalk(ev, replace(RULES, historical=groups))
+
+
 # --- assignment validation ---
 
 @pytest.mark.parametrize("damage", [
@@ -327,6 +363,28 @@ def test_small_city_definition_changes_types_not_flows(built):
         a, b = geos["primary"], geos[name]
         assert sorted(a.settlements.municipalities) == sorted(b.settlements.municipalities)
         assert a.accounts == b.accounts
+
+
+@real
+def test_historical_scenario_groups_exactly_the_documented_municipalities(built):
+    cw = {n: built[2][n].crosswalk.set_index("code") for n in ("primary", "historical_boundaries")}
+    changed = cw["primary"].index[cw["primary"].settlement_id.fillna("") != cw["historical_boundaries"].settlement_id.fillna("")]
+    assert set(changed) == {c for pair in geo.DL2868_PAIRS for c in pair}
+    assert {frozenset(m.split(";")) for m in built[2]["historical_boundaries"].settlements.query("n_municipalities > 1 and type == 'rural'").municipalities} \
+        == {frozenset({"09102", "09110", "09114", "09115"}), frozenset({"10103", "10105", "10107"}),
+            frozenset({"09103", "09105"}), frozenset({"10205", "10209"}), frozenset({"10207", "10208"})}
+
+
+@real
+def test_historical_scenario_conserves_people_and_only_internalizes_moves(built):
+    _, flows, geos = built
+    a, b = geos["primary"], geos["historical_boundaries"]
+    cw = a.crosswalk.set_index("code")
+    for y, f in flows.items():
+        assert a.accounts[y]["people_after"] == b.accounts[y]["people_after"]
+        inside = sum(int(f.loc[o, d]) for g in b.scenario.historical for o in g for d in g if o != d)
+        assert a.accounts[y]["movers_settlement"] - b.accounts[y]["movers_settlement"] == inside
+    assert len(a.settlements) - len(b.settlements) == 13 - 5
 
 
 @real

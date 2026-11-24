@@ -36,6 +36,16 @@ EXPECTED_FUA_NAMES = {CONCEPCION: "Concepción", CHIGUAYANTE: "Chiguayante",
 HUALQUI = "08104"
 ANTARTICA = "12202"
 ISLANDS = ("05103", "05201")  # Juan Fernandez, Isla de Pascua
+# Municipalities linked by a transfer of territory in DL 2868 of 1979 (docs/historical_boundaries.md).
+# Used only by the historical_boundaries sensitivity scenario.
+DL2868_PAIRS = (("09114", "09115"),   # Saavedra -> Teodoro Schmidt
+                ("09114", "09102"),   # Saavedra -> Carahue
+                ("09110", "09115"),   # Nueva Imperial -> Teodoro Schmidt
+                ("10107", "10105"),   # Maullin -> Los Muermos
+                ("10103", "10105"),   # Fresia -> Los Muermos
+                ("09105", "09103"),   # Freire -> Cunco
+                ("10209", "10205"),   # Quinchao (Achao) -> Dalcahue unit (via Quemchi)
+                ("10207", "10208"))   # Queilen -> Quellon
 SMOD_CLASSES = (10, 11, 12, 13, 21, 22, 23, 30)
 
 CITY, SMALL_CITY, RURAL, UNCLASSIFIED = "fua_city", "small_city", "rural", "unclassified"
@@ -43,6 +53,18 @@ CITY, SMALL_CITY, RURAL, UNCLASSIFIED = "fua_city", "small_city", "rural", "uncl
 
 class GeographyError(Exception):
     """The settlement geography is incomplete or inconsistent."""
+
+
+def linked_groups(pairs) -> tuple[frozenset[str], ...]:
+    """Municipalities connected, directly or through others, by the given pairs."""
+    groups: list[set[str]] = []
+    for pair in pairs:
+        joined = set(pair)
+        for g in [g for g in groups if g & joined]:
+            joined |= g
+            groups.remove(g)
+        groups.append(joined)
+    return tuple(frozenset(g) for g in sorted(groups, key=min))
 
 
 @dataclass(frozen=True)
@@ -54,6 +76,7 @@ class Scenario:
     unmatch: tuple[str, ...] = ()          # municipalities kept out of their FUA
     dense: tuple[int, ...] = (30,)         # GHS-SMOD classes counted as dense urban
     exclude: tuple[str, ...] = (ANTARTICA,)
+    historical: tuple[frozenset[str], ...] = ()   # municipalities grouped for past transfers
 
 
 PRIMARY = Scenario("primary", "Agreed rules")
@@ -74,6 +97,8 @@ SCENARIOS = (
     replace(PRIMARY, name="threshold_60", threshold=0.6, description="FUA threshold 60%"),
     replace(PRIMARY, name="no_islands", exclude=(ANTARTICA, *ISLANDS),
             description="Isla de Pascua and Juan Fernández also excluded"),
+    replace(PRIMARY, name="historical_boundaries", historical=linked_groups(DL2868_PAIRS),
+            description="Historical-boundary sensitivity (DL 2868); not exact 1977 boundaries"),
 )
 
 
@@ -93,6 +118,12 @@ class Evidence:
         total = self.by_class.sum(axis=1)
         people = self.by_class[:, [SMOD_CLASSES.index(c) for c in dense]].sum(axis=1)
         return np.divide(people, total, out=np.zeros(len(total)), where=total > 0)
+
+    def dense_people(self, dense, rows) -> float:
+        """Dense share of several municipalities together."""
+        part = self.by_class[rows]
+        people = part[:, [SMOD_CLASSES.index(c) for c in dense]].sum()
+        return people / part.sum() if part.sum() > 0 else 0.0
 
 
 def load_evidence() -> Evidence:
@@ -163,6 +194,13 @@ def build_crosswalk(ev: Evidence, sc: Scenario) -> pd.DataFrame:
     unknown = set().union(*sc.merges, set()) - set(ev.fuas.fua_id)
     if unknown:
         raise GeographyError(f"unknown FUAs to merge: {unknown}")
+    if sum(map(len, sc.historical)) != len(set().union(*sc.historical, set())):
+        raise GeographyError("a municipality appears in two historical groups")
+    place = {c: q for q, c in enumerate(ev.meta.code)}
+    missing = set().union(*sc.historical, set()) - set(place)
+    if missing:
+        raise GeographyError(f"unknown municipalities in historical groups: {missing}")
+    past = {c: tuple(sorted(m)) for m in sc.historical for c in m}
     group = {f: tuple(sorted(m)) for m in sc.merges for f in m}
     names = dict(zip(ev.fuas.fua_id, ev.fuas.fua_name))
     fua = match_fuas(ev, sc.threshold, sc.unmatch)
@@ -174,6 +212,8 @@ def build_crosswalk(ev: Evidence, sc: Scenario) -> pd.DataFrame:
     for q, (code, name) in enumerate(zip(ev.meta.code, ev.meta["name"])):
         excluded = code in sc.exclude
         members = ()
+        if code in past and (excluded or code in bd.DISPLACED or pd.notna(fua[code])):
+            raise GeographyError(f"{name} is in a city, displaced or excluded: cannot be grouped")
         if excluded:
             sid, sname, kind = None, None, None
         elif code in bd.DISPLACED:
@@ -182,6 +222,11 @@ def build_crosswalk(ev: Evidence, sc: Scenario) -> pd.DataFrame:
             members = group.get(int(fua[code]), (int(fua[code]),))
             sid = "F" + "+".join(map(str, members))
             sname, kind = " + ".join(names[f] for f in members), CITY
+        elif code in past:
+            idx = [place[c] for c in past[code]]
+            sid = "H" + "+".join(past[code])
+            sname = " + ".join(ev.meta["name"].iloc[idx])
+            kind = SMALL_CITY if ev.dense_people(sc.dense, idx) >= 0.5 else RURAL
         elif dense[q] >= 0.5:
             sid, sname, kind = f"S{code}", name, SMALL_CITY
         else:
@@ -272,9 +317,12 @@ def validate_crosswalk(cw: pd.DataFrame, codes, sc: Scenario) -> None:
     per = kept.groupby("settlement_id")
     if (per.type.nunique() != 1).any() or (per.settlement_name.nunique() != 1).any():
         raise GeographyError("a settlement has two types or names")
-    single = kept[kept.type != CITY]
+    single = kept[(kept.type != CITY) & ~kept.settlement_id.str.startswith("H")]
     if single.settlement_id.duplicated().any():
-        raise GeographyError("only FUA cities may hold several municipalities")
+        raise GeographyError("only cities and historical groups may hold several municipalities")
+    grouped = kept[kept.settlement_id.str.startswith("H")].groupby("settlement_id").code
+    if {frozenset(g) for _, g in grouped} != set(sc.historical):
+        raise GeographyError("historical groups differ from the scenario")
     if kept[kept.type == CITY].matched_fua.isna().any():
         raise GeographyError("a city municipality has no FUA")
 

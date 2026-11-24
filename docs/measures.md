@@ -72,8 +72,9 @@ and in 15/102.5 = 14.6%.
 
 Tracing flagged settlements suggests that some recorded moves are not moves. None is corrected.
 
-1. **Boundary changes of 1979.** Some large one-way flows between adjacent rural municipalities in
-   1977-82 may come from changes of municipal territory rather than moves. Not resolved here.
+1. **Boundary changes of 1979.** Eight large one-way flows in 1977-82 match transfers of territory in
+   Decreto Ley 2868. People may have named the former municipality without moving. Evidence and
+   sensitivity scenario: docs/historical_boundaries.md.
 2. **Similar names in 1997-2002.** Florida (Biobío) and La Florida (Santiago); San Pedro (near Melipilla)
    and San Pedro de la Paz (created 1995, inside the Concepción unit). The flows look like earlier
    residences assigned to the wrong place. **Possible, not confirmed.** Both stay in the primary analysis.
@@ -81,3 +82,41 @@ Tracing flagged settlements suggests that some recorded moves are not moves. Non
 If so, both inflate out-rates of the named origin, and the first also inflates in-rates of the
 receiving municipality. Very small southern units with military, mining or farm workers also have extreme rates,
 which may be real.
+
+## Regression samples (`src/samples.py`)
+
+Specifications choose rows and weights. They never change a flow, denominator, rate or rank, and
+settlements are not re-ranked, so any difference comes from the sample alone.
+
+| Specification | Role | Rows | Weight |
+|---|---|---|---|
+| `unweighted` | **Primary** | All ranked settlements | 1 |
+| `no_florida_san_pedro` | Sensitivity (main sample check) | Without both, in every period | 1 |
+| `no_florida_san_pedro_2002` | Sensitivity (additional) | Without both, in 2002 only | 1 |
+| `min_500` | Sensitivity | Average population at least 500 in that period | 1 |
+| `no_santiago` | Sensitivity | Without Santiago, in every period | 1 |
+| `weighted` | Supplementary | All ranked settlements | Average population of that period |
+| `log_weighted` | Supplementary | All ranked settlements | Natural log of that average population |
+
+The list was fixed before any model was fitted. **No specification is chosen or dropped because of
+its result; all are reported.**
+
+**Florida and San Pedro.** This tests **sample influence**: whether the result depends on these two
+observations. It does **not** correct potentially misassigned flows. Their flows stay in the matrices
+unchanged, so departures, arrivals and populations of every other settlement are the same, as are
+their own measures in the files. If some of their departures are misassigned, the matching arrivals
+elsewhere remain. The every-period version keeps the sample constant, so changes between periods
+are not caused by its composition.
+
+**Santiago.** Leaving it out removes it as an observation only. Its flows and everyone's rank
+stay, so the largest remaining position is below 1.
+
+**Weights.** Weighted fits are supplementary. They ask about the settlement of the average person, or a
+compromise with it, while the unweighted fit asks about the average settlement. Disagreement
+does not refute the primary result, and agreement does not confirm it. Under population weights the largest city
+dominates. Log weights depend on the unit of measurement (people) and have no sampling
+interpretation; they only reduce concentration. The effective sample size
+(sum of weights)^2 / (sum of squared weights) and the largest weight are reported beside every weighted fit.
+
+**Contiguity.** Dropping settlements can leave others without neighbours. Neighbours must be recomputed
+for each sample in Phase 4.
