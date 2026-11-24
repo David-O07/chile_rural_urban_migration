@@ -27,9 +27,12 @@
 | 23 | 2026-11-23 | Rank by period-specific average population; normalize within period; origin- and destination-population ranks as sensitivity (docs/measures.md) | One consistent base for the interval | Agreed |
 | 24 | 2026-11-23 | Out-migration denominator: origin population. In-migration: average population. Sensitivity: average for out, destination population for in | docs/measures.md | Agreed |
 | 25 | 2026-11-23 | Five-year rates; not annualized | Match the question asked in the census | Agreed |
+| 26 | 2026-11-23 | Remove Antártica from all matrices before populations and rates | Populations and flows must come from one table | Agreed |
+| 27 | 2026-11-23 | Moves with Isla de Pascua and Juan Fernández count as ordinary mainland departures and arrivals; the islands are unranked | Keeps real moves | Agreed |
 
 ## Open questions
 
+- Treatment of suspected artefacts in 1977-82 and 1997-2002 flows (docs/measures.md).
 - Area and classification of the two displaced islands.
 - Nearest-neighbour sensitivity for Phase 4 (docs/geography.md).
 - Step 3 findings and open questions are in docs/chim_interpretation.md.
