@@ -75,6 +75,16 @@ def main() -> int:
     i, j = i[keep], j[keep]
     contact = shapely.intersection(geoms[i], geoms[j])
     area = shapely.area(contact)
+    original = raw.set_index("C_MUN").geometry.loc[units.index].values
+    for q in np.where(~shapely.is_valid(original))[0]:
+        old, new = original[q], geoms[q]
+        near = [x for x in tree.query(shapely.box(*old.bounds)) if x != q]
+        edge = shapely.boundary(old)
+        touched = {x for x in near if shapely.intersects(edge, geoms[x])}
+        now_touched = {x for x in near if shapely.intersects(new, geoms[x])}
+        same_vertices = set(map(tuple, shapely.get_coordinates(old))) == set(map(tuple, shapely.get_coordinates(new)))
+        row(f"Repair {meta.iloc[q]}", f"{shapely.is_valid_reason(old).split('[')[0]} -> valid {shapely.is_valid(new)}; "
+            f"area change {new.area - old.area:+.6f} m2; same vertices {same_vertices}; same neighbours {touched == now_touched}")
     row("Overlaps over 1 m2", f"{int((area > 1).sum())} pairs, {area.sum() / 1e6:.2f} km2 in total, largest {area.max() / 1e6:.2f} km2")
     row("Neighbour pairs / point-only contacts", f"{len(i)} / {int(((shapely.length(contact) == 0) & (area == 0)).sum())}")
     degree = np.bincount(np.r_[i, j], minlength=len(geoms))

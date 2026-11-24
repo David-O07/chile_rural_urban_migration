@@ -61,6 +61,14 @@ DATASETS = [
         137_934_966,
         "8cda2bfd1dbdc7b2bc0fd9a08afa92efc202d37092d09e7bf1779c42fbe29559",
     ),
+    Dataset(
+        "ghs_smod",
+        f"{JRC}/GHS_SMOD_POP_GLOBE_R2019A/GHS_SMOD_POP2015_GLOBE_R2019A_54009_1K/V2-0/"
+        "GHS_SMOD_POP2015_GLOBE_R2019A_54009_1K_V2_0.zip",
+        "GHS_SMOD_POP2015_GLOBE_R2019A_54009_1K_V2_0.zip",
+        14_072_420,
+        "30b0a04d2218b942b36e4619e575f78bc1600147daf0ea9787595eeb7198b914",
+    ),
 ]
 
 
@@ -234,6 +242,13 @@ def check_contents(raw: Path) -> None:
         print(f"  population grid crs: {r.crs.to_string()}")
         if r.res != (1000.0, 1000.0) or r.count != 1:
             raise AcquisitionError("expected one band of 1 km cells")
+        grid = (r.shape, r.transform, r.crs)
+
+    tif, = (raw / "ghs_smod").glob("*.tif")
+    with rasterio.open(tif) as r:
+        print(f"  settlement grid: {r.width:,} x {r.height:,}, {r.dtypes[0]}, nodata {r.nodata}")
+        if (r.shape, r.transform, r.crs) != grid:
+            raise AcquisitionError("settlement and population grids do not align")
 
 
 def main() -> int:

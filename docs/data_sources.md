@@ -25,6 +25,9 @@ size, SHA-256, zip integrity and expected contents. It does not mean the data ar
     but **omits the flow matrices**. Do not use it.
 - GHS-FUA: https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/GHSL/GHS_FUA_UCDB2015_GLOBE_R2019A/V1-0/GHS_FUA_UCDB2015_GLOBE_R2019A_54009_1K_V1_0.zip
 - GHS-POP: https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/GHSL/GHS_POP_MT_GLOBE_R2019A/GHS_POP_E2015_GLOBE_R2019A_54009_1K/V1-0/GHS_POP_E2015_GLOBE_R2019A_54009_1K_V1_0.zip
+- GHS-SMOD: https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/GHSL/GHS_SMOD_POP_GLOBE_R2019A/GHS_SMOD_POP2015_GLOBE_R2019A_54009_1K/V2-0/GHS_SMOD_POP2015_GLOBE_R2019A_54009_1K_V2_0.zip
+  (14,072,420 bytes; settlement class per 1 km cell; 2015; World Mollweide; CC BY 4.0).
+  JRC marks the R2019A grids as old releases. They are used to match GHS-FUA R2019A.
 - GHSL licence: https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/GHSL/copyright.txt
 
 ## SHA-256 checksums
@@ -35,6 +38,7 @@ they detect later changes but do not prove authenticity.
 - CHIM zip: `cf315e541993aef04b56dd77e5da470f0363ea3cbd543403cec277c8f01eeb8b`
 - GHS-FUA zip: `d54de59b82b8c4d64a710f90ccd554975a3be92233f14115ac154094c3549979`
 - GHS-POP zip: `8cda2bfd1dbdc7b2bc0fd9a08afa92efc202d37092d09e7bf1779c42fbe29559`
+- GHS-SMOD zip: `30b0a04d2218b942b36e4619e575f78bc1600147daf0ea9787595eeb7198b914`
 
 ## Files we need from CHIM
 
