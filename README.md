@@ -1,56 +1,67 @@
-# Spatial diffusion of internal migration in Chile
+# Internal Migration Along Chile's Rural–Urban Continuum (1982–2002)
 
-A partial conceptual replication, for one country, of Lerch, Du & Beckendorff (2026),
-*The Spatial Diffusion of Internal Migration Across the Rural-Urban Continuum in
-Developing Countries* (https://doi.org/10.1007/s10680-026-09774-w).
+How do internal migration patterns vary along Chile's rural–urban continuum across three census
+periods, and how sensitive are the observed patterns to historical municipal boundary changes?
 
-**Status:** Phase 2, data acquisition and preparation. There are no results yet.
+A settlement-level analysis of census migration flows between 304 municipalities. It is a partial conceptual
+replication, for one country, of Lerch, Du & Beckendorff (2026),
+[*The Spatial Diffusion of Internal Migration Across the Rural-Urban Continuum in Developing Countries*](https://doi.org/10.1007/s10680-026-09774-w),
+with a different data source and an added check on boundary changes made in 1979.
 
-## Research question
+**[Read the report](reports/report.md)** (tables: [reports/tables.md](reports/tables.md))
 
-How did the urban gradients of out- and in-migration change across Chile between
-1977-82, 1987-92 and 1997-2002, and are the estimates robust to spatial dependence?
+![Mean migration rate by tenth of the continuum](reports/figures/rates_by_tenth.png)
 
-An *urban gradient* is the slope relating a settlement's migration rate to its position
-on a scale from sparse countryside to the largest city.
+## Findings
 
-## Data sources
+- Both out- and in-migration rates were lower toward the urban end of the continuum in all three periods.
+- The pattern is not linear: rates are far higher in the sparsest places and vary much less across the rest.
+- Grouping municipalities affected by suspected 1979 boundary artefacts changed the slopes by about one percentage point at most.
+  The grouping is an approximation, **not** a reconstruction of historical boundaries.
 
-| Dataset | Used for | Source |
-|---|---|---|
-| CHIM (Rowe 2017) | Migration flows, populations, municipal boundaries | [GeoDa page](https://geodacenter.github.io/data-and-lab/CHIM/), [paper](https://doi.org/10.18335/region.v4i3.198) |
-| GHS-FUA R2019A | Functional Urban Area boundaries | [GHSL](https://human-settlement.emergency.copernicus.eu/ghs_fua.php) |
-| GHS-SMOD R2019A, 2015, 1 km | Which cells are dense urban | [GHSL](https://human-settlement.emergency.copernicus.eu/) |
-| GHS-POP R2019A, 2015, 1 km | Population overlap between municipalities and FUAs | [GHSL](https://human-settlement.emergency.copernicus.eu/) |
+Results are descriptive. Spatial dependence between neighbours and formal tests of change over time are outside the scope.
 
-Raw data is not in this repository. See [docs/data_sources.md](docs/data_sources.md)
-for locations, sizes, checksums and licences.
+## Method in brief
 
-## Scope and limits
+1. Group municipalities into 30 cities (GHSL Functional Urban Areas) and 206 ranked rural settlements.
+2. Rank them: rural by density, then cities by population.
+3. Calculate five-year out- and in-migration rates from origin–destination matrices.
+4. Fit a straight line per outcome and census period (OLS, HC3 standard errors).
+5. Repeat with municipalities affected by the 1979 changes grouped together.
 
-- This does not reproduce the paper's 41-country result, and its data is not the
-  paper's: CHIM replaces the IPUMS samples.
-- Three periods in one country can describe change but cannot identify its causes.
+## Run it
 
-Methodological choices are recorded in [docs/decisions.md](docs/decisions.md);
-the geography in [docs/geography.md](docs/geography.md) and planned measures in
-[docs/measures.md](docs/measures.md).
-
-## Setup
+Python 3.11. Everything needs the raw data, which is **not** in this repository.
 
 ```sh
 python3.11 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+python src/acquire.py        # about 0.9 GB; checks sizes and SHA-256
+python spatial_diffusion.py  # rates, regressions, tables, figures
+python -m pytest             # tests that need raw data are skipped without it
 ```
+
+If the CHIM download is unavailable, download the archive by hand from the address in
+[docs/data_sources.md](docs/data_sources.md) and run `python src/acquire.py --from-file chim PATH`.
+
+## Data and licences
+
+| Dataset | Used for | Terms |
+|---|---|---|
+| [CHIM](https://geodacenter.github.io/data-and-lab/CHIM/) (Rowe 2017) | Flows, boundaries | No licence found; offered "as is" |
+| [GHS-FUA, GHS-POP, GHS-SMOD R2019A](https://human-settlement.emergency.copernicus.eu/) | Cities, population overlap | CC BY 4.0, © European Union |
+
+Because CHIM's terms are unclear, its data, the flow matrices and values for individual settlements are not
+published here. Only aggregate results are. See [docs/data_sources.md](docs/data_sources.md).
 
 ## Layout
 
 ```
-data/raw/        original downloads, never edited (not committed)
-data/processed/  cleaned outputs (not committed)
-docs/            data sources, data dictionary, decision log
-src/             Python modules
-tests/           automated checks
-reports/figures/ figures
+spatial_diffusion.py  runs the analysis
+src/                  acquire, chim, boundaries, geography, measures, samples, models, figures
+tests/                automated checks
+docs/                 data sources, definitions, decisions
+reports/              report, tables, figures
+data/                 raw and processed data (not committed)
 ```

@@ -98,8 +98,10 @@ settlements are not re-ranked, so any difference comes from the sample alone.
 | `weighted` | Supplementary | All ranked settlements | Average population of that period |
 | `log_weighted` | Supplementary | All ranked settlements | Natural log of that average population |
 
-The list was fixed before any model was fitted. **No specification is chosen or dropped because of
-its result; all are reported.**
+The final analysis fits only `unweighted` and `no_florida_san_pedro` (decision 33). The others are implemented but not fitted.
+
+The list was fixed, and later shortened to reduce scope, before any model was fitted. **No specification was chosen or dropped because of
+its result; every one fitted is reported.**
 
 **Florida and San Pedro.** This tests **sample influence**: whether the result depends on these two
 observations. It does **not** correct potentially misassigned flows. Their flows stay in the matrices
@@ -118,5 +120,4 @@ dominates. Log weights depend on the unit of measurement (people) and have no sa
 interpretation; they only reduce concentration. The effective sample size
 (sum of weights)^2 / (sum of squared weights) and the largest weight are reported beside every weighted fit.
 
-**Contiguity.** Dropping settlements can leave others without neighbours. Neighbours must be recomputed
-for each sample in Phase 4.
+**Contiguity.** Not used: spatial models are outside the final scope.

@@ -66,10 +66,18 @@ We found no licence covering the data. The readme has none and GeoDa offers it "
 the CC BY licence of the REGION article covers the article. Until this is resolved:
 
 - The original archive is kept only in `data/raw/chim/CHIM.zip` (local, read-only).
-- Neither CHIM files nor tables derived from its flows are published or redistributed.
+- Neither CHIM files, flow tables nor values for individual settlements are published or redistributed.
+- Aggregate results (slopes, averages over about 23 settlements) are published with credit. This is a judgement:
+  no term found forbids or permits it.
+
+Checked 2026-11-24: the GeoDa CHIM page states only "Data provided "as is," no warranties" and tags its collection "open data"
+without terms; the article page shows no data licence and says that open access to census **micro-data** is not possible for
+confidentiality reasons (only aggregates are used here). GHSL: CC BY 4.0, "Reuse is allowed provided
+appropriate credit is given and any changes are indicated".
 
 ## Citations
 
 - Rowe, F. (2017). The CHilean Internal Migration (CHIM) database. *REGION*, 4(3), R1-R6.
   https://doi.org/10.18335/region.v4i3.198
-- GHSL citations: to be copied from the product pages at download.
+- European Commission, Joint Research Centre: GHS-FUA, GHS-POP and GHS-SMOD, R2019A, (c) European Union, CC BY 4.0.
+  The product pages checked gave no fuller citation text.

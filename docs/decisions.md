@@ -33,11 +33,14 @@
 | 29 | 2026-11-24 | Florida and San Pedro: every-period exclusion is the main sample check, 2002-only additional; flows unchanged; tests influence, not a correction | docs/measures.md | Agreed |
 | 30 | 2026-11-24 | Unweighted primary. Sensitivity: average population at least 500 (per period); without Santiago. Supplementary: population and log-population weights, with effective size and largest weight | docs/measures.md | Agreed |
 | 31 | 2026-11-24 | Report every specification; never select by agreement with the primary result | Avoids selective reporting | Agreed |
+| 32 | 2026-11-24 | Research question: how migration varies along the continuum in three periods, and sensitivity to historical boundary changes. Robustness to spatial dependence removed | Reduced scope; not tested | Agreed |
+| 33 | 2026-11-24 | Final models: OLS with HC3 per outcome and period, for the primary and historical-boundary geographies, plus `no_florida_san_pedro`. No spatial models, change tests or further checks. Narrows 30 and 31; reduced before any fit | Reduced scope | Agreed |
+| 34 | 2026-11-24 | Averages by tenth, and slopes without the sparsest tenth, shown as exploratory; cutoff chosen after seeing results | The linear fit hides strong curvature | Added with the results |
+| 35 | 2026-11-24 | Publish aggregate results only (narrows 7 and 11). CHIM data, flow matrices and values for individual settlements stay private | Terms unclear: docs/data_sources.md | Agreed |
 
 ## Open questions
 
 - Area and classification of the two displaced islands.
-- Nearest-neighbour sensitivity for Phase 4 (docs/geography.md).
 - Step 3 findings and open questions are in docs/chim_interpretation.md.
 - CHIM covers ages 5+ resident in Chile at both dates; its exclusions are not documented.
 - No explicit licence found for the CHIM data.

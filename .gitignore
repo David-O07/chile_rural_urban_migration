@@ -8,9 +8,9 @@ data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 
-# CHIM-derived numerical reports: local until the licence is settled
+# CHIM-derived numbers for individual settlements or flows: local until the licence is settled.
+# reports/ otherwise holds aggregate results only.
 reports/local/
-reports/figures/
 
 # Archives and partial downloads
 *.zip

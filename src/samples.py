@@ -1,4 +1,4 @@
-"""Regression samples and weights for Phase 4 (docs/measures.md). No model is fitted here.
+"""Regression samples and weights (docs/measures.md). No model is fitted here.
 
 A specification chooses rows and weights from the measures table. It never changes a flow,
 a denominator, a rate or a rank.
